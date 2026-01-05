@@ -1,0 +1,20 @@
+# Foundry
+cache/
+out/
+lib/
+
+# Node
+node_modules/
+.next/
+dist/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# Build
+build/
