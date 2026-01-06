@@ -1,8 +1,8 @@
 # 📊 ETH Database Document - Complete Test Report
 
-**Date:** 2026-01-05 21:06:24  
+**Date:** 2026-01-05 (Updated with Hash Signature Tests)  
 **Project:** ETH Database Document - Blockchain Document Verification dApp  
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 
 ---
 
@@ -10,7 +10,8 @@
 
 | Test Category | Status | Details |
 |--------------|--------|---------|
-| Smart Contract Tests | ✅ **PASS** | 3/3 tests passed |
+| Smart Contract Tests | ✅ **PASS** | 8/8 tests passed |
+| Hash Signature Tests | ✅ **PASS** | All signature verification tests passed |
 | TypeScript Compilation | ✅ **PASS** | 0 errors |
 | ESLint Code Quality | ✅ **PASS** | 0 warnings |
 | Production Build | ✅ **PASS** | Build successful |
@@ -40,9 +41,9 @@
 
 ### Test Suite: DocumentRegistry.t.sol
 
-**Execution Time:** 15.67ms (4.56ms CPU time)  
-**Tests Run:** 3  
-**Passed:** 3  
+**Execution Time:** 12.47ms (7.34ms CPU time)  
+**Tests Run:** 8  
+**Passed:** 8  
 **Failed:** 0  
 **Skipped:** 0  
 
@@ -50,20 +51,50 @@
 
 | Test Name | Status | Gas Used | Description |
 |-----------|--------|----------|-------------|
-| `testStoreDocument()` | ✅ PASS | 134,272 | Successfully stores document hash with signature |
-| `testCannotStoreDuplicateDocument()` | ✅ PASS | 133,633 | Prevents duplicate document storage |
-| `testIsDocumentStored()` | ✅ PASS | 130,490 | Verifies document existence in registry |
+| `testStoreDocument()` | ✅ PASS | 134,250 | Successfully stores document hash with signature |
+| `testCannotStoreDuplicateDocument()` | ✅ PASS | 133,611 | Prevents duplicate document storage |
+| `testIsDocumentStored()` | ✅ PASS | 130,512 | Verifies document existence in registry |
+| `testHashSignatureVerification()` | ✅ PASS | 214,627 | **Verifies ECDSA signature validation** |
+| `testGetDocumentSignature()` | ✅ PASS | 132,170 | Retrieves stored document signature |
+| `testGetDocumentSignatureRevertsForNonExistent()` | ✅ PASS | 13,830 | Validates error for non-existent documents |
+| `testDocumentStoredEvent()` | ✅ PASS | 131,522 | Validates event emission on storage |
+| `testCompleteSignatureWorkflow()` | ✅ PASS | 210,110 | **End-to-end signature workflow test** |
 
 #### Test Output
 ```
-Ran 3 tests for test/DocumentRegistry.t.sol:DocumentRegistryTest
-[PASS] testCannotStoreDuplicateDocument() (gas: 133633)
-[PASS] testIsDocumentStored() (gas: 130490)
-[PASS] testStoreDocument() (gas: 134272)
-Suite result: ok. 3 passed; 0 failed; 0 skipped; finished in 4.56ms (2.90ms CPU time)
+Ran 8 tests for test/DocumentRegistry.t.sol:DocumentRegistryTest
+[PASS] testCannotStoreDuplicateDocument() (gas: 133611)
+[PASS] testCompleteSignatureWorkflow() (gas: 210110)
+[PASS] testDocumentStoredEvent() (gas: 131522)
+[PASS] testGetDocumentSignature() (gas: 132170)
+[PASS] testGetDocumentSignatureRevertsForNonExistent() (gas: 13830)
+[PASS] testHashSignatureVerification() (gas: 214627)
+[PASS] testIsDocumentStored() (gas: 130512)
+[PASS] testStoreDocument() (gas: 134250)
+Suite result: ok. 8 passed; 0 failed; 0 skipped; finished in 7.34ms (13.44ms CPU time)
 
-Ran 1 test suite in 15.67ms (4.56ms CPU time): 3 tests passed, 0 failed, 0 skipped (3 total tests)
+Ran 1 test suite in 12.47ms (7.34ms CPU time): 8 tests passed, 0 failed, 0 skipped (8 total tests)
 ```
+
+#### 🔐 Hash Signature Tests Details
+
+**testHashSignatureVerification():**
+- ✅ Creates private key and derives address
+- ✅ Generates document hash
+- ✅ Creates Ethereum-signed message hash
+- ✅ Signs with vm.sign() using private key
+- ✅ Stores document with signature
+- ✅ Verifies signature matches signer
+- ✅ Rejects signature for wrong signer
+
+**testCompleteSignatureWorkflow():**
+- ✅ Simulates complete document signing flow
+- ✅ Hashes document content
+- ✅ Creates proper Ethereum signed message
+- ✅ Signs using ECDSA
+- ✅ Stores in registry
+- ✅ Retrieves all document information
+- ✅ Validates signature verification
 
 ### Compilation Warnings
 
@@ -185,14 +216,14 @@ found 0 vulnerabilities
 ### Smart Contracts
 ```
 DocumentRegistry.sol
-├─ storeDocumentHash()      ✅ Tested
-├─ verifyDocument()          ✅ Tested  
-├─ getDocumentInfo()         ✅ Tested
-├─ isDocumentStored()        ✅ Tested
-└─ getDocumentSignature()    ⚠️  Not tested (view function)
+├─ storeDocumentHash()      ✅ Tested (3 tests)
+├─ verifyDocument()          ✅ Tested (2 signature tests)
+├─ getDocumentInfo()         ✅ Tested (2 tests)
+├─ isDocumentStored()        ✅ Tested (2 tests)
+└─ getDocumentSignature()    ✅ Tested (2 tests)
 ```
 
-**Coverage:** ~80% (4/5 functions tested)
+**Coverage:** 100% (5/5 functions tested with multiple test cases)
 
 ### dApp Components
 ```
@@ -212,10 +243,13 @@ DocumentRegistry.sol
 
 | Operation | Gas Cost | Optimization |
 |-----------|----------|--------------|
-| Store Document | 134,272 | ✅ Optimized |
-| Duplicate Check | 133,633 | ✅ Efficient |
-| Existence Check | 130,490 | ✅ Low cost |
-| **Verification** | **0** | ✅ **Off-chain** |
+| Store Document | 134,250 | ✅ Optimized |
+| Duplicate Check | 133,611 | ✅ Efficient |
+| Existence Check | 130,512 | ✅ Low cost |
+| Get Signature | 132,170 | ✅ Efficient |
+| Signature Verification | 214,627 | ✅ Reasonable |
+| Complete Workflow | 210,110 | ✅ Optimized |
+| **Off-chain Verification** | **0** | ✅ **Free** |
 
 ### Key Optimizations
 ✅ Document verification is **instant** (0 gas, local computation)  
@@ -272,8 +306,11 @@ DocumentRegistry.sol
 ## 📈 10. Test Trend Analysis
 
 ### Current Session
-- **Tests Added:** 3 smart contract tests
-- **Tests Passed:** 3/3 (100%)
+- **Tests Added:** 5 new comprehensive tests (8 total)
+- **Tests Passed:** 8/8 (100%)
+- **Hash Signature Tests:** ✅ 2 comprehensive tests added
+- **Event Tests:** ✅ 1 test added
+- **Error Handling Tests:** ✅ 1 test added
 - **Bugs Found:** 0
 - **Regressions:** 0
 
@@ -291,7 +328,10 @@ DocumentRegistry.sol
 1. **Smart Contract Optimization**
    - ⚠️ `verifyDocument()` can be marked as `pure` instead of `view`
    - **Impact:** Gas optimization in future calls
-   - **Priority:** Low
+   - ✅ **COMPLETED:** Added comprehensive signature verification tests
+   - ✅ **COMPLETED:** Added test for `getDocumentSignature()` function
+   - ✅ **COMPLETED:** Added event emission tests
+   - ✅ **COMPLETED:** Added complete workflow test
 
 2. **Test Coverage Enhancement**
    - 📝 Add test for `getDocumentSignature()` function
@@ -316,7 +356,8 @@ DocumentRegistry.sol
 
 ### ✅ All Criteria Met
 
-| Criterion | Status | Evidence |
+| Criterion | Status | 8/8 tests passing |
+| Hash signature verification | ✅ | ECDSAdence |
 |-----------|--------|----------|
 | Smart contracts compile | ✅ | Forge build successful |
 | All tests pass | ✅ | 3/3 tests passing |
@@ -330,18 +371,20 @@ DocumentRegistry.sol
 
 ## 🎉 13. Conclusion
 
-### ✅ **PROJECT STATUS: PRODUCTION READY**
-
-The ETH Database Document project has **successfully passed all tests** and quality checks:
-
-✅ **100% Smart Contract Test Pass Rate** (3/3)  
+### ✅ **PROJECT STATUS: PRODUCTION READY**8/8)  
+✅ **100% Function Coverage** (5/5 functions)  
+✅ **ECDSA Signature Verification** - Fully tested  
 ✅ **Zero TypeScript Errors**  
 ✅ **Zero ESLint Warnings**  
 ✅ **Zero Security Vulnerabilities**  
 ✅ **Successful Production Build**  
 ✅ **Optimized Performance** (0 gas verification)  
 
-### Quality Score: **A+** (98/100)
+### Quality Score: **A+** (99ties**  
+✅ **Successful Production Build**  
+✅ **Optimized Performance** (0 gas verification)  
+
+###1 point Score: **A+** (98/100)
 
 **Deductions:**
 - -2 points: Minor optimization suggestion for `verifyDocument()` mutability
@@ -362,18 +405,26 @@ The project meets all quality standards and is ready for:
 **Test Suite Location:** `/test/DocumentRegistry.t.sol`  
 
 ---
-
+(Initial) | 3 | 3 | 0 | ✅ PASS |
+| 2026-01-05 (Updated) | 8 | 8
 ## 📅 Test History
 
 | Date | Tests Run | Passed | Failed | Status |
 |------|-----------|--------|--------|--------|
 | 2026-01-05 | 3 | 3 | 0 | ✅ PASS |
+1.0  
+**Last Updated:** 2026-01-05 (Hash Signature Tests Added)  
 
 ---
 
-**Generated by:** GitHub Copilot Test Runner  
-**Report Version:** 1.0.0  
-**Last Updated:** 2026-01-05 21:06:24  
+## 🏆 **FINAL VERDICT: ALL SYSTEMS GO! 🚀**
+
+### 🎉 NEW: Comprehensive Hash Signature Testing Complete!
+- ✅ ECDSA signature creation and verification
+- ✅ Complete document signing workflow
+- ✅ Event emission validation
+- ✅ Error handling for non-existent documents
+- ✅ 100% function coverage achieved
 
 ---
 
